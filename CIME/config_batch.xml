@@ -180,7 +180,7 @@
       <queue walltimemax="24:00:00" default="true">slurm</queue>
     </queues>
   </batch_system>
-  
+
   <batch_system MACH="aleph" type="pbs" >
     <directives>
       <directive>-l nodes={{ num_nodes }}</directive>

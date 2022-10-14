@@ -47,6 +47,7 @@ unit_testing: can be 'true' or 'false'.
 This allows using a different mpirun command to launch unit tests
 
 -->
+
 <config_machines version="2.0">
 
   <machine MACH="ginsburg">
@@ -54,8 +55,9 @@ This allows using a different mpirun command to launch unit tests
       <OS>Linux</OS>
       <COMPILERS>intel</COMPILERS>
       <MPILIBS>impi,mvapich2,mpich</MPILIBS>
-      <CIME_OUTPUT_ROOT>/burg/crew/users/$USER/$CASE</CIME_OUTPUT_ROOT>
-      <DIN_LOC_ROOT>/burg/crew/projects/CESM2.2/input/cesm-inputdata</DIN_LOC_ROOT>                                                                                                                       
+      <CIME_OUTPUT_ROOT>/burg/crew/users/$USER</CIME_OUTPUT_ROOT>
+      <DIN_LOC_ROOT>/burg/crew/projects/CESM2.2/input/cesm-inputdata</DIN_LOC_ROOT>
+      <!--DIN_LOC_ROOT_CLMFORC>$ENV{HOME}/projects/ptclm-data</DIN_LOC_ROOT_CLMFORC-->
       <DOUT_S_ROOT>/burg/crew/users/$USER/$CASE</DOUT_S_ROOT>
       <BASELINE_ROOT>/burg/crew/projects/CESM2.2/input/baselines</BASELINE_ROOT>
       <CCSM_CPRNC>/burg/crew/projects/CESM2.2/cime/tools/cprnc/cprnc</CCSM_CPRNC>
@@ -68,7 +70,7 @@ This allows using a different mpirun command to launch unit tests
         <executable>mpiexec</executable>
       </mpirun>
       <module_system type="module" allow_error="true">
-        <init_path lang="perl">/usr/share/lmod/lmod/init/perl</init_path>
+	<init_path lang="perl">/usr/share/lmod/lmod/init/perl</init_path>
       <init_path lang="csh">/usr/share/lmod/lmod/init/csh</init_path>
       <init_path lang="sh">/usr/share/lmod/lmod/init/sh</init_path>
       <init_path lang="python">/usr/share/lmod/lmod/init/env_modules_python.py</init_path>
@@ -80,7 +82,7 @@ This allows using a different mpirun command to launch unit tests
         <command name="load">netcdf-fortran-intel/4.5.3</command>
         <command name="load">netcdf/gcc/64/gcc/64/4.7.4</command>
         <command name="load">mvapich2/gcc/64/2.3.4</command>
-        <command name="load">svn/1.10.6-1</command>
+	<command name="load">svn/1.10.6-1</command>
       </modules>
     </module_system>
     <environment_variables>
