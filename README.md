@@ -1,5 +1,7 @@
 
-# CESM2.2 Ginsburg userguide  
+# CESM2.2 Ginsburg userguide      
+
+## Basics of running the model       
 
 1.  Creating a new case  
     Example `./create_newcase --case aquaQPC6 --compset QPC6 --res f19_f19_mg17 --mach ginsburg`  
@@ -49,7 +51,7 @@ CAM is set up by default to output a set of fields to a single monthly average h
 	`fincl2 = 'T:I'`, this will include instantanious temperature in the second history file.  Add [more variables](https://www.cesm.ucar.edu/models/cesm2/atmosphere/docs/ug6/hist_flds_f2000.html) in a comma seperated list.
 	These can be changed at anytime; to save time run a couple years with ndens=1 and then when you run for longer (section 6) and want more output add in the rest.      
 
-
+## Modifications       
 8.  Run with added chemistry     
     When adding chemistry, run the first day with these settings using NTASKS=-1 then continue to run normally. Without this the case might not reach equilibrium and run will fail on the first simulated day          
 	fv_nsplit = 128  
@@ -68,6 +70,7 @@ CAM is set up by default to output a set of fields to a single monthly average h
     To impliment the new SSTs in the model         
     create_newcase, use the long name to set the compset, use AQPFILE for DOCN, and include --run-unsupported since this is now an untested setup       
     ./create_newcase --case aquaQPC6_f09_SSTwave2  --compset 2000_CAM60_SLND_SICE_DOCN%AQPFILE_SROF_SGLC_SWAV --res f09_f09_mg17 --mach ginsburg --run-unsupported       
+    First, XML change DOCN_AQP_FILENAME = "name_of_sst_file.nc"  
     Need to edit CaseDocs, to obtain CaseDocs setup the case (./case.setup) and run ./preview_namelist.        
     In CaseDocs, cp docn.streams.txt.aquapfile to CaseRoot, where other user_namelists are. rename it user_docn.streams.txt.aquapfile (can use mv command).       
     Edit the file with the name and location of the new SST file (can use emacs -nw filename).          
@@ -75,18 +78,37 @@ CAM is set up by default to output a set of fields to a single monthly average h
     Go back into CaseDocs to check that the original docn.streams.txt.aquapfile reflects your changes.      
 
 
-10.  Troubleshooting  
+10. cosp (cloud observation simulator package)       
+    to turn on cosp append it to the cam configure options using xml      
+    ./xmlchange -append CAM_CONFIG_OPTS=-cosp        
+    Another option for turning on cosp that is handy if all your cases need it on is shown in the next section         
+    In order to obtain the ISCCP histogram the following also need to be in user_nl_cam, regardless of how you turn on cosp.       
+    cosp_isccp = .true.      
+    cosp_lisccp_sim = .true.       
+
+11. make new case compset options        
+    adding more compset options can be helpful when making new cases as you can select more about this case instead of using xml.      
+    above is one way to turn on cosp, but we can also make cosp a subselection of cam that we can call when we create a new case      
+    First find the configure_component file for cam which is in cesm2.2/components/cam/cime_config.      
+    under the cam header I added [%COSP] to the CAM6 line because thats the physics ill be using but can be added to any of the cam versions      
+    Next under the CAM Options header I added a description <desc option="COSP"       >CAM -cosp configuration option</desc>       
+    Then under CAM_CONFIG_OPTS I added what the model will do when we call cam60%cosp  <value compset="CAM60%COSP">-cosp</value>       
+    which is essentially the cammand line code I would have run each time had I not set this up.       
+    now when we create a new case our compset option for cam CAM60 can include cosp like this CAM60%COSP       
+ 
+
+11.  Troubleshooting  
     Problems with machine (CESM requirments not met, svn or other module not working)  
     Email IT (ginsburg is columbia’s machine) [hpc-support@columbia.edu](mailto:hpc-support@columbia.edu)  
     IT usually wants one question per email, this will create a ticket for each question  
-    
-    Missing required modules  
+ 
+   a.  Missing required modules  
     Create virtual environment (best is conda env)  
     This [wiki](https://hprc.tamu.edu/wiki/SW:Anaconda#Managing_Anaconda_Virtual_Environments) explains the steps  
     Might need to start with different anaconda version  
     `module avail` to see available versions  
     
-	Problems with CESM or CIME  
+    b. Problems with CESM or CIME  
 	 [CESM discussion board](https://bb.cgd.ucar.edu/cesm/)  
     Create account; If no change when creating account, your username or password isnt valid. Successfully creating an account should automatically take you to your home page or to a login page.  
     
